@@ -1,9 +1,11 @@
 use std::{
 	fs::File,
 	io::{self, BufRead, Read, Result as IoResult, Seek, SeekFrom, Write},
-	os::unix::fs::MetadataExt,
 	path::Path,
 };
+
+#[cfg(unix)]
+use std::os::unix::fs::MetadataExt;
 
 pub trait Backend: Read + Write + Seek {}
 
@@ -23,7 +25,12 @@ pub struct BlockReader<T: Backend> {
 impl BlockReader<File> {
 	pub fn open(path: &Path, rw: bool) -> IoResult<Self> {
 		let file = File::options().read(true).write(rw).open(path)?;
+		#[cfg(unix)]
 		let bs = file.metadata()?.blksize() as usize;
+
+		#[cfg(windows)]
+		let bs = 4096; // Default block size for Windows
+		
 		Ok(BlockReader::new(file, bs, rw))
 	}
 }

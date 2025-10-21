@@ -1,5 +1,8 @@
 use std::io::{BufRead, Write};
 
+#[cfg(windows)]
+use std::io;
+
 use super::*;
 use crate::{err, InodeNum};
 
@@ -16,7 +19,15 @@ impl Header {
 	fn new(inr: InodeNum, kind: InodeType, dname: &OsStr) -> Self {
 		assert!(dname.len() <= UFS_MAXNAMELEN);
 		let mut name = [0u8; UFS_MAXNAMELEN + 1];
-		name[0..dname.len()].copy_from_slice(dname.as_bytes());
+		#[cfg(unix)]
+		let bytes = dname.as_bytes();
+
+		#[cfg(windows)]
+		let bytes = dname.to_str()
+    	.ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Invalid UTF-8")).expect("Invalid UTF-8")
+    	.as_bytes();
+
+		name[0..dname.len()].copy_from_slice(bytes);
 		let reclen = ((4 + 2 + 1 + 1 + name.len() + 3) & !3) as u16;
 		Self {
 			inr,

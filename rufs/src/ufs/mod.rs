@@ -4,9 +4,11 @@ use std::{
 	io::{Cursor, Error as IoError, ErrorKind, Read, Result as IoResult, Seek, SeekFrom},
 	mem::size_of,
 	num::NonZeroU64,
-	os::unix::ffi::{OsStrExt, OsStringExt},
 	path::Path,
 };
+
+#[cfg(unix)]
+use std::os::unix::ffi::{OsStrExt, OsStringExt};
 
 mod balloc;
 mod dir;

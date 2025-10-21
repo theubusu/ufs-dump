@@ -1,6 +1,9 @@
 use super::*;
 use crate::InodeNum;
 
+#[cfg(windows)]
+use std::io;
+
 impl<R: Backend> Ufs<R> {
 	fn iter_xattr<T>(
 		&mut self,
@@ -54,7 +57,14 @@ impl<R: Backend> Ufs<R> {
 			file.read(&mut data)?;
 			data.resize(data.len() - hdr.contentpadlen as usize, 0u8);
 
+			#[cfg(unix)]
 			let name = OsStr::from_bytes(&name[0..namelen]);
+
+			#[cfg(windows)]
+			let name = std::str::from_utf8(&name[0..namelen])
+    		.map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?
+    		.as_ref();
+			
 			if let Some(x) = f(&hdr, name, &data) {
 				return Ok(Some(x));
 			}
@@ -99,7 +109,14 @@ impl<R: Backend> Ufs<R> {
 			data.push("\0");
 			None::<()>
 		})?;
-		Ok(data.into_vec())
+		//Ok(data.into_vec())
+		#[cfg(unix)]
+		return Ok(data.into_vec());
+
+		#[cfg(windows)]
+		return Ok(data.into_string()
+    	.map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "Invalid UTF-8"))?
+    	.into_bytes());
 	}
 
 	/// Get the size of an extended attribute.

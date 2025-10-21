@@ -6,12 +6,6 @@ use rufs::Ufs;
 
 use crate::cli::Cli;
 
-macro_rules! err {
-	($n:ident) => {
-		std::io::Error::from_raw_os_error(libc::$n)
-	};
-}
-
 mod cli;
 
 mod reader;
@@ -28,7 +22,7 @@ fn main() -> Result<()> {
 		.init();
 
 	let fs = Fs {
-		ufs: Ufs::open(&cli.device, false)?,
+		ufs: Ufs::open(&cli.file, false)?,
 	};
 
 	reader::run(fs, &cli.out_path)?;

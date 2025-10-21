@@ -1,5 +1,3 @@
-#![cfg_attr(fuzzing, allow(dead_code, unused_imports, unused_mut))]
-
 mod blockreader;
 mod data;
 mod decoder;
@@ -10,6 +8,8 @@ mod ufs;
 pub const ENOATTR: i32 = libc::ENOATTR;
 #[cfg(target_os = "linux")]
 pub const ENOATTR: i32 = libc::ENODATA;
+#[cfg(windows)]
+pub const ENOATTR: i32 = 93; // ENODATA equivalent on Windows
 
 pub use crate::{
 	blockreader::{Backend, BlockReader},

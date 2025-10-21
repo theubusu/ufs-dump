@@ -12,11 +12,6 @@ cfg-if = "1.0"
 clap = { version = "4.5.4", features = ["derive"] }
 clap-verbosity-flag = "2.2.1"
 env_logger = { version = "0.11.3", default-features = false, features = ["auto-color", "humantime"] }
-fuse2rs = "0.1.2"
-# Technically the libfuse dependency is only needed on FreeBSD,
-# but because of https://github.com/rust-lang/cargo/issues/1197
-# we're forced to also take the dependency on Linux.
-fuser = { version = "0.16.0", features = [ "libfuse" ] }
 libc = "0.2.176"
 log = "0.4.22"
 rufs = { version = "0.6.0", path = "rufs" }
@@ -29,6 +24,3 @@ rstest_reuse = "0.7.0"
 tempfile = "3.0"
 xattr = "=1.5.1"
 rand = "0.9.0"
-
-# Fuzz dependencies
-libfuzzer-sys = "0.4"

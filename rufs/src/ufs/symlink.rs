@@ -1,6 +1,9 @@
 use super::*;
 use crate::{err, InodeNum};
 
+#[cfg(windows)]
+use std::io;
+
 impl<R: Backend> Ufs<R> {
 	/// Read the contents of a symbolic link.
 	#[doc(alias = "readlink")]
@@ -41,7 +44,15 @@ impl<R: Backend> Ufs<R> {
 		let len = link.len();
 		if len < UFS_SLLEN {
 			let mut data = [0u8; UFS_SLLEN];
-			data[0..len].copy_from_slice(link.as_bytes());
+			#[cfg(unix)]
+			let bytes = link.as_bytes();
+
+			#[cfg(windows)]
+			let bytes = link.to_str()
+    		.ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "Invalid UTF-8"))?
+    		.as_bytes();
+
+			data[0..len].copy_from_slice(bytes);
 			ino.data = InodeData::Shortlink(data);
 		} else {
 			todo!("creating long symlinks");
