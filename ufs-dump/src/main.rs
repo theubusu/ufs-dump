@@ -31,7 +31,9 @@ fn main() -> Result<()> {
 		ufs: Ufs::open(&cli.device, false)?,
 	};
 
-	reader::run(fs)?;
+	reader::run(fs, &cli.out_path)?;
+
+	println!("\nDone!");
 
 	Ok(())
 }

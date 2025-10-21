@@ -7,7 +7,7 @@ use clap_verbosity_flag::{Verbosity, WarnLevel};
 #[command(version, about)]
 pub struct Cli {
 	/// Path to the device/file
-	pub device:     PathBuf,
+	pub device: PathBuf,
 
 	/// Output path
 	pub out_path: PathBuf,
