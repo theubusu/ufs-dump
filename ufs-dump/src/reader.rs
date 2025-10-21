@@ -5,7 +5,7 @@ use std::{
 	path::Path,
 };
 
-use rufs::{InodeNum, InodeType};
+use rufs::{InodeNum, InodeType, InodeAttr};
 use crate::{Fs};
 
 fn lookup(fs: &mut Fs, path: &Path) -> Result<InodeNum> {
@@ -18,6 +18,11 @@ fn lookup(fs: &mut Fs, path: &Path) -> Result<InodeNum> {
 		inr = fs.ufs.dir_lookup(inr, comp.as_os_str())?;
 	}
 	Ok(inr)
+}
+
+fn getattr(fs: &mut Fs, inr: InodeNum) -> Result<InodeAttr> {
+	let ino = fs.ufs.inode_attr(inr)?;
+	Ok(ino)
 }
 
 struct FsEntry {
@@ -51,7 +56,8 @@ fn run_tree(fs: &mut Fs, path: &Path, depth: usize) -> Result<()> {
 		}
 
 		if entry.kind == InodeType::RegularFile {
-			println!("{} : Regular File", full_path.display());
+			let attr = getattr(fs, entry.inr)?;
+			println!("{} : Regular File, Size: {}", full_path.display(), attr.size);
 		}
 	
 	}
