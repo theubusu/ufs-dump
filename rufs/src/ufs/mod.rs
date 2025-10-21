@@ -67,15 +67,15 @@ pub struct Ufs<R: Backend> {
 }
 
 impl Ufs<File> {
-	pub fn open(path: &Path, rw: bool) -> IoResult<Self> {
+	pub fn open(path: &Path, rw: bool, old_sblock: bool) -> IoResult<Self> {
 		let file = BlockReader::open(path, rw)?;
-		Self::new(file)
+		Self::new(file, old_sblock)
 	}
 }
 
 impl<R: Backend> Ufs<R> {
-	pub fn new(mut file: BlockReader<R>) -> IoResult<Self> {
-		let pos = SBLOCK_UFS2 as u64 + MAGIC_OFFSET;
+	pub fn new(mut file: BlockReader<R>, old_sblock: bool) -> IoResult<Self> {
+		let pos = if old_sblock {SBLOCK_UFS2_P as u64 + MAGIC_OFFSET} else {SBLOCK_UFS2 as u64 + MAGIC_OFFSET};
 		file.seek(SeekFrom::Start(pos))?;
 		let mut magic = [0u8; 4];
 		file.read_exact(&mut magic)?;
@@ -95,7 +95,7 @@ impl<R: Backend> Ufs<R> {
 
 		let mut file = Decoder::new(file, config);
 
-		let superblock: Superblock = file.decode_at(SBLOCK_UFS2 as u64)?;
+		let superblock: Superblock = if old_sblock {file.decode_at(SBLOCK_UFS2_P as u64)?} else {file.decode_at(SBLOCK_UFS2 as u64)?};
 		if superblock.magic != FS_UFS2_MAGIC {
 			iobail!(
 				ErrorKind::InvalidInput,
@@ -168,7 +168,7 @@ impl<R: Backend> Ufs<R> {
 		sbassert!(Some(sb.frag) == 1i32.checked_shl(sb.fragshift as u32));
 		sbassert!(sb.bsize == (!sb.bmask + 1));
 		sbassert!(sb.fsize == (!sb.fmask + 1));
-		sbassert!(sb.sbsize == sb.fsize);
+		//sbassert!(sb.sbsize == sb.fsize);
 		sbassert!(sb.cgsize_struct() < sb.bsize as usize);
 
 		let fpg = sb.fpg as u64;

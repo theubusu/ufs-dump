@@ -15,6 +15,3 @@ documentation = "https://docs.rs/rufs"
 bincode.workspace = true
 libc.workspace = true
 log.workspace = true
-
-[dev-dependencies]
-tempfile.workspace = true

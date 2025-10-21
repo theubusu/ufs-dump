@@ -12,6 +12,10 @@ pub struct Cli {
 	/// Output path
 	pub out_path: PathBuf,
 
+	/// Superblock at 8192
+    #[arg(short = 'p')]
+    pub old_sblock: bool,
+
 	#[command(flatten)]
 	pub verbose: Verbosity<WarnLevel>,
 }

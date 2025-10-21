@@ -22,7 +22,7 @@ fn main() -> Result<()> {
 		.init();
 
 	let fs = Fs {
-		ufs: Ufs::open(&cli.file, false)?,
+		ufs: Ufs::open(&cli.file, false, cli.old_sblock)?,
 	};
 
 	reader::run(fs, &cli.out_path)?;
