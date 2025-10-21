@@ -1,8 +1,7 @@
 [workspace]
 members = [
 	"rufs",
-	"fuse-ufs",
-	"fuzz",
+	"ufs-dump",
 ]
 resolver = "2"
 

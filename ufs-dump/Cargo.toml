@@ -1,5 +1,5 @@
 [package]
-name = "fuse-ufs"
+name = "ufs-dump"
 version = "0.6.0"
 edition = "2021"
 license = "BSD-2-Clause"
@@ -10,14 +10,6 @@ rust-version = "1.85.0"
 documentation = "https://docs.rs/fuse-ufs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[features]
-default = ["fuse3"]
-fuse3 = ["dep:fuser", "rufs/fuser"]
-fuse2 = ["dep:fuse2rs", "rufs/fuse2rs"]
-Linux = ["fuse3"]
-FreeBSD = ["fuse3"]
-OpenBSD = ["fuse2"]
 
 [dependencies]
 anyhow.workspace = true

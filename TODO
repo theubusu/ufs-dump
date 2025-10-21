@@ -1,9 +1,0 @@
-Short Term:
-- more integration tests
-- more unit tests
-- BlockReader: make `Write` somehow optional
-
-Long Term:
-- softupdates
-- snapshots
-- replace `run()` with more selective error reporting

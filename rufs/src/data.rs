@@ -20,7 +20,8 @@ pub const MAGIC_OFFSET: u64 = 1372;
 pub const CG_MAGIC: i32 = 0x090255;
 
 /// Location of the superblock on UFS2.
-pub const SBLOCK_UFS2: usize = 65536;
+//pub const SBLOCK_UFS2: usize = 65536;
+pub const SBLOCK_UFS2: usize = 8192;
 
 /// Size of a superblock
 pub const SBLOCKSIZE: usize = 8192;
